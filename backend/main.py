@@ -1,12 +1,14 @@
 ﻿import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from rag import ask_question
 from ingest import ingest_documents
 
 app = FastAPI()
 
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,19 +20,27 @@ app.add_middleware(
 class Question(BaseModel):
     question: str
 
-@app.get("/")
+
+@app.get("/", response_class=HTMLResponse)
 def home():
-    return {"message": "Emami AI Assistant is running"}
+    return """
+    <h1>Emami AI Knowledge Assistant</h1>
+    <p>Service is running.</p>
+    <a href="/docs">Open API Docs</a>
+    """
+
 
 @app.post("/ask")
 def ask(q: Question):
-    result = ask_question(q.question)
-    return result
+    answer = ask_question(q.question)
+    return {"answer": answer}
+
 
 @app.post("/ingest")
 def ingest():
     ingest_documents()
     return {"status": "Documents ingested successfully"}
+
 
 @app.get("/health")
 def health():
