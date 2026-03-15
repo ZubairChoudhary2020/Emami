@@ -1,0 +1,13 @@
+﻿fastapi
+uvicorn
+langchain
+langchain-community
+langchain-openai
+langchain-groq
+chromadb
+sentence-transformers
+pypdf
+python-multipart
+openai
+groq
+python-dotenv
